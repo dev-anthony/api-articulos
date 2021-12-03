@@ -2,15 +2,16 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Articulo; //recuerda importar las clases
 use Illuminate\Http\Request;
+use App\Http\Requests\GuardarArticuloRequest;
+use App\Models\Articulo; //recuerda importar las clases
 
 class ArticuloController extends Controller
 {
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\Response 
      */
     public function index()
     {
@@ -28,7 +29,7 @@ class ArticuloController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request) //el $request es la petición que mandamos desde el front-end y en esa petición es donde van los datos que estamos enviando
+    public function store(GuardarArticuloRequest $request) //el $request es la petición que mandamos desde el front-end y en esa petición es donde van los datos que estamos enviando
     {
         $articulo = Articulo::create($request->all()); //Con el $request->all() es que esatmos obteniendo todos los datos del formulario y con el método 'create' estamos creando esos recursos y lo esatmos guardadno en la variable $articulo
 
@@ -75,29 +76,29 @@ class ArticuloController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(GuardarArticuloRequest $request, $id)
     {
-        #Generate a udpate query
+        //Generate a udpate query
         $articulo = Articulo::find($id);
         // $articulo = Articulo::find($request->query->all(), $id);
-
+/*
         $request->validate([
             'nombre'=>'required',
             'precio'=>'required',
             'stock'=>'required'
         ]);//Validamos los datos que vamos a enviar
+*/
 
 
-        if($articulo){
+        if(!empty($articulo)){//empyty par aarray de objetos
             $articulo->nombre = $request->nombre;
             $articulo->precio = $request->precio;
             $articulo->stock = $request->stock;
-            $articulo->save();
+            $articulo->save();//add otra validación
             
             return response()->json([
                 "error" => false,
-                "message" => "El producto se a actualizado correctamente",
-                "response" => $articulo
+                "message" => "El producto se a actualizado correctamente"
             ], 200);
         }else {
             return response()->json([
